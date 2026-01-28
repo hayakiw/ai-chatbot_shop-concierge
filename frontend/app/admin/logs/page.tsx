@@ -18,7 +18,7 @@ export default function AdminLogsPage() {
   const [messages, setMessages] = useState<LogMessage[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page_size, setPageSize] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   
   // 検索クエリの状態管理
   const [userId, setUserId] = useState("");
@@ -173,146 +173,147 @@ export default function AdminLogsPage() {
         </form>
       </div>
 
-      <div className="w-full overflow-hidden border rounded-lg bg-white shadow-sm">
-        {/* table-fixed を指定し、各列の幅を固定します */}
-        <table className="w-full table-fixed divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {/* 日時は140px固定 */}
-              <th className="w-[140px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                送信日時
-              </th>
-              {/* ユーザーは最低80px、固定100px程度に設定 */}
-              <th className="w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ユーザーID
-              </th>
-              {/* 属性は最低80px、固定100px程度に設定 */}
-              <th className="w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                属性
-              </th>
-              {/* 送信者は80px固定 */}
-              <th className="w-[80px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                送信者
-              </th>
-              {/* メッセージは幅を指定せず、残りの全幅を自動で使う */}
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                メッセージ
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200 text-sm">
-            {messages.map((log, index) => (
-              <tr key={`${log.chat_uid}-${index}`} className="hover:bg-gray-50 transition">
-                {/* 送信日時 */}
-                <td className="px-4 py-4 break-words text-gray-500 text-xs">
-                  {new Date(log.created_at).toLocaleString("ja-JP")}
-                </td>
-
-                {/* ユーザーID */}
-                <td className="px-4 py-4 break-words text-gray-500 text-xs">
-                  {log.user_id}
-                </td>
-
-                {/* 属性 (最低幅を確保しつつ改行を許可) */}
-                <td className="px-4 py-4">
-                  <div className="flex text-xs space-y-1">
-                    <span className="text-gray-700 font-medium truncate">
-                      {log.residence === 'in_prefecture' ? '県内' : log.residence === 'out_prefecture' ? '県外' : log.residence}
-                    </span>
-                    <span className="text-gray-400"> / </span>
-                    <span className="text-gray-700 truncate">
-                      {log.gender === 'male' ? '男性' : log.gender === 'female' ? '女性' : '不明'}
-                    </span>
-                  </div>
-                </td>
-
-                {/* 送信者 */}
-                <td className="px-4 py-4">
-                  <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                    log.role === 'user' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
-                  }`}>
-                    {log.role.toUpperCase()}
-                  </span>
-                </td>
-
-                {/* メッセージ (ここがメインで伸縮し、長い場合は折り返す) */}
-                <td className="px-4 py-4 text-gray-700 break-words leading-relaxed">
-                  <ExpandableMessage 
-                    message={log.message} 
-                    menus_json={log.menus_json} 
-                  />
-                </td>
+      {!isLoading && (<>
+        <div className="w-full overflow-hidden border rounded-lg bg-white shadow-sm">
+          {/* table-fixed を指定し、各列の幅を固定します */}
+          <table className="w-full table-fixed divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                {/* 日時は140px固定 */}
+                <th className="w-[140px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  送信日時
+                </th>
+                {/* ユーザーは最低80px、固定100px程度に設定 */}
+                <th className="w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ユーザーID
+                </th>
+                {/* 属性は最低80px、固定100px程度に設定 */}
+                <th className="w-[100px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  属性
+                </th>
+                {/* 送信者は80px固定 */}
+                <th className="w-[80px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  送信者
+                </th>
+                {/* メッセージは幅を指定せず、残りの全幅を自動で使う */}
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  メッセージ
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200 text-sm">
+              {messages.map((log, index) => (
+                <tr key={`${log.chat_uid}-${index}`} className="hover:bg-gray-50 transition">
+                  {/* 送信日時 */}
+                  <td className="px-4 py-4 break-words text-gray-500 text-xs">
+                    {new Date(log.created_at).toLocaleString("ja-JP")}
+                  </td>
 
-      {/* ページネーション情報 */}
-      <div className="flex items-center justify-between px-2 mt-6">
-        <p className="text-sm text-gray-500">
-          合計: <span className="font-bold text-gray-700">{totalCount}</span> 件 
-          ({page} / {totalPages} ページ)
-        </p>
-        
-        <div className="flex gap-1">
-          {/* 最初へ */}
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(1)}
-            className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100"
-          >
-            &laquo;
-          </button>
+                  {/* ユーザーID */}
+                  <td className="px-4 py-4 break-words text-gray-500 text-xs">
+                    {log.user_id}
+                  </td>
 
-          {/* 前へ */}
-          <button 
-            disabled={page === 1}
-            onClick={() => setPage(p => p - 1)}
-            className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100 mr-2"
-          >
-            前へ
-          </button>
+                  {/* 属性 (最低幅を確保しつつ改行を許可) */}
+                  <td className="px-4 py-4">
+                    <div className="flex text-xs space-y-1">
+                      <span className="text-gray-700 font-medium truncate">
+                        {log.residence === 'in_prefecture' ? '県内' : log.residence === 'out_prefecture' ? '県外' : log.residence}
+                      </span>
+                      <span className="text-gray-400"> / </span>
+                      <span className="text-gray-700 truncate">
+                        {log.gender === 'male' ? '男性' : log.gender === 'female' ? '女性' : '不明'}
+                      </span>
+                    </div>
+                  </td>
 
-          {/* ページ番号（最大5つ程度表示） */}
-          {pageNumbers[0] > 1 && <span className="px-2 py-1 text-gray-400">...</span>}
-          
-          {pageNumbers.map((num) => (
-            <button
-              key={num}
-              onClick={() => setPage(num)}
-              className={`px-3 py-1 border rounded text-sm transition ${
-                page === num 
-                  ? "bg-slate-800 text-white border-slate-800" 
-                  : "hover:bg-gray-100 text-gray-600"
-              }`}
-            >
-              {num}
-            </button>
-          ))}
+                  {/* 送信者 */}
+                  <td className="px-4 py-4">
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      log.role === 'user' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                    }`}>
+                      {log.role.toUpperCase()}
+                    </span>
+                  </td>
 
-          {pageNumbers[pageNumbers.length - 1] < totalPages && <span className="px-2 py-1 text-gray-400">...</span>}
-
-          {/* 次へ */}
-          <button 
-            disabled={page >= totalPages}
-            onClick={() => setPage(p => p + 1)}
-            className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100 ml-2"
-          >
-            次へ
-          </button>
-
-          {/* 最後へ */}
-          <button
-            disabled={page >= totalPages}
-            onClick={() => setPage(totalPages)}
-            className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100"
-          >
-            &raquo;
-          </button>
+                  {/* メッセージ (ここがメインで伸縮し、長い場合は折り返す) */}
+                  <td className="px-4 py-4 text-gray-700 break-words leading-relaxed">
+                    <ExpandableMessage 
+                      message={log.message} 
+                      menus_json={log.menus_json} 
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
 
+        {/* ページネーション情報 */}
+        <div className="flex items-center justify-between px-2 mt-6">
+          <p className="text-sm text-gray-500">
+            合計: <span className="font-bold text-gray-700">{totalCount}</span> 件 
+            ({page} / {totalPages} ページ)
+          </p>
+          
+          <div className="flex gap-1">
+            {/* 最初へ */}
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(1)}
+              className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100"
+            >
+              &laquo;
+            </button>
+
+            {/* 前へ */}
+            <button 
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100 mr-2"
+            >
+              前へ
+            </button>
+
+            {/* ページ番号（最大5つ程度表示） */}
+            {pageNumbers[0] > 1 && <span className="px-2 py-1 text-gray-400">...</span>}
+            
+            {pageNumbers.map((num) => (
+              <button
+                key={num}
+                onClick={() => setPage(num)}
+                className={`px-3 py-1 border rounded text-sm transition ${
+                  page === num 
+                    ? "bg-slate-800 text-white border-slate-800" 
+                    : "hover:bg-gray-100 text-gray-600"
+                }`}
+              >
+                {num}
+              </button>
+            ))}
+
+            {pageNumbers[pageNumbers.length - 1] < totalPages && <span className="px-2 py-1 text-gray-400">...</span>}
+
+            {/* 次へ */}
+            <button 
+              disabled={page >= totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100 ml-2"
+            >
+              次へ
+            </button>
+
+            {/* 最後へ */}
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage(totalPages)}
+              className="px-3 py-1 border rounded text-sm disabled:opacity-30 hover:bg-gray-100"
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
+      </>)}
     </div>
   );
 }
