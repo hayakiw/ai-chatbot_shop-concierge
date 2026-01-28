@@ -1,0 +1,9 @@
+/build
+/dist
+/venv
+/app/api/venv
+/app/api/logs/*
+
+/app/api/.env
+
+**/__pycache__/**

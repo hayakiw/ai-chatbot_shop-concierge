@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot | モノトーン・エディション</title>
+
+    <!-- AI Chatbot 表示 -->
+    <script src="chatbot-embed.js"></script>
+    <script>
+        const chatbot = new ChatbotEmbed({
+            chatbotUrl: 'http://localhost:3000/chat',  // チャットボットURL
+            chatbotTitle: 'AIコンシェルジュ',
+            position: 'bottom-right',
+            iconColor: '#4cbabf',
+            width: '450px',
+            height: '80%'
+        });
+    </script>
+    <!-- // AI Chatbot 表示 -->
+
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+            line-height: 1.8;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: #000000;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            color: #cccccc;
+            font-weight: 300;
+        }
+
+        /* Buttons */
+        .cta-button {
+            background: #ffffff;
+            color: #000000;
+            padding: 1.2rem 3.5rem;
+            font-size: 1rem;
+            border: 1px solid #ffffff;
+            border-radius: 0; /* シャープな印象にするため角丸を解除 */
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: #ffffff;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 2rem;
+            background: #ffffff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #000000;
+            margin-bottom: 5rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: #000000;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border: 1px solid #eeeeee;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #000000;
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            filter: grayscale(1); /* アイコンもモノクロに */
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #000000;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #666666;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 8rem 2rem;
+            background: #f9f9f9;
+        }
+
+        .demo-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .chat-window {
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #000000;
+            color: #ffffff;
+            padding: 1.2rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .chat-messages {
+            padding: 2rem;
+            min-height: 350px;
+            background: #ffffff;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.2rem;
+            font-size: 0.9rem;
+            max-width: 85%;
+        }
+
+        .user-message {
+            background: #000000;
+            color: #ffffff;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #f0f0f0;
+            color: #333333;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 2rem;
+            background: #000000;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        .cta-section .cta-button:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>AI Chatbot</h1>
+            <p>Experience the next generation of customer support with our minimal & smart solutions.</p>
+            <button class="cta-button">Free Trial</button>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">FEATURES</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>自然な会話</h3>
+                    <p>最新のAI技術により、無駄を削ぎ落としたスムーズな対話を実現します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>24時間対応</h3>
+                    <p>常時稼働。タイムレスなサポートで顧客の信頼を獲得します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>データ分析</h3>
+                    <p>複雑なデータをシンプルに可視化し、次の戦略を導き出します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>多言語対応</h3>
+                    <p>境界のないコミュニケーションを、すべての人へ。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>簡単カスタマイズ</h3>
+                    <p>直感的な操作で、独自のスタイルへと最適化できます。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>セキュア</h3>
+                    <p>厳格なセキュリティ基準で、大切な情報を守り抜きます。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo">
+        <div class="container">
+            <h2 class="section-title">DEMO</h2>
+            <div class="demo-container">
+                <div class="chat-window">
+                    <div class="chat-header">
+                        AI ASSISTANT
+                    </div>
+                    <div class="chat-messages">
+                        <div class="message bot-message">
+                            こんにちは。何かお手伝いできることはありますか？
+                        </div>
+                        <div class="message user-message">
+                            営業時間を教えてください。
+                        </div>
+                        <div class="message bot-message">
+                            平日は 9:00 - 18:00 です。土日祝は休業しております。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>START YOUR EXPERIENCE</h2>
+            <button class="cta-button">Get Started</button>
+        </div>
+    </section>
+</body>
+</html>
