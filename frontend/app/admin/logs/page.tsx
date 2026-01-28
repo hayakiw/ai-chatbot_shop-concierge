@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Loading } from "@/components/common/Loading";
 
 // APIレスポンスに基づいた型定義
 interface LogMessage {
@@ -173,7 +174,9 @@ export default function AdminLogsPage() {
         </form>
       </div>
 
-      {!isLoading && (<>
+      {isLoading ? (
+        <Loading />
+      ) : (<>
         <div className="w-full overflow-hidden border rounded-lg bg-white shadow-sm">
           {/* table-fixed を指定し、各列の幅を固定します */}
           <table className="w-full table-fixed divide-y divide-gray-200">
