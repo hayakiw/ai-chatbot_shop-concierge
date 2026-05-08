@@ -1,9 +1,14 @@
 from typing import Optional
+from urllib.parse import quote
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from sqlalchemy.sql.expression import func
 from models.menu import MenuTable
 from google.genai import types
+
+# 店舗マスター情報
+SHOP_NAME = "ドッグサロン"
+SHOP_ADDRESS = "〒683-0036 鳥取県米子市弥生町"
 
 def get_shop_tools(db: Session):
     f"""
@@ -17,12 +22,12 @@ def get_shop_tools(db: Session):
         """
         店舗情報を表示します。
         """
-        detail = """以下の店舗情報をご覧ください。
+        detail = f"""以下の店舗情報をご覧ください。
 
-店舗名: ドッグサロンF
+店舗名: {SHOP_NAME}
 営業時間: 10時～17時（金曜定休日）
 電話番号: 08012345678
-住所: 〒683-0036 鳥取県米子市弥生町
+住所: {SHOP_ADDRESS}
 
 最新情報は公式サイトをご確認ください。
 """
@@ -30,6 +35,26 @@ def get_shop_tools(db: Session):
         return {
             "type": "text",
             "message": detail
+        }
+
+    def get_shop_access():
+        """
+        店舗の所在地・アクセス情報をGoogleMapリンク付きで表示します。
+        """
+        query = quote(f"{SHOP_NAME} {SHOP_ADDRESS}")
+        map_url = f"https://www.google.com/maps/search/?api=1&query={query}"
+
+        message = f"""店舗の場所は以下の通りです。
+
+店舗名: {SHOP_NAME}
+住所: {SHOP_ADDRESS}
+
+GoogleMapで開く: {map_url}
+"""
+
+        return {
+            "type": "text",
+            "message": message
         }
 
     def search_menus(
@@ -84,7 +109,11 @@ def get_shop_tools(db: Session):
             function_declarations=[
                 types.FunctionDeclaration(
                     name="get_shop_details",
-                    description="店舗情報を取得します",
+                    description="店舗情報（店舗名、営業時間、電話番号、住所）を取得します",
+                ),
+                types.FunctionDeclaration(
+                    name="get_shop_access",
+                    description="店舗の場所・所在地・アクセス情報をGoogleMapのリンク付きで取得します。「店はどこ？」「場所を教えて」「アクセス方法」「行き方」などの質問に使用します",
                 ),
                 types.FunctionDeclaration(
                     name="search_menus",
@@ -110,6 +139,7 @@ def get_shop_tools(db: Session):
     # 実行用マップ
     function_map = {
         "get_shop_details": get_shop_details,
+        "get_shop_access": get_shop_access,
         "search_menus": search_menus,
     }
 

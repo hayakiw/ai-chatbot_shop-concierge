@@ -1,4 +1,4 @@
 ## メニューデータ
-メニュー.xlsx で最新のデータを管理
+storage/menus.xlsx で最新のデータを管理
 
-/insert/data へアクセスし、取り込み
+開発時は /insert/data のAPIへアクセスし、取り込めるようにしている

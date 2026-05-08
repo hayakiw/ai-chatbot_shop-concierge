@@ -34,6 +34,7 @@ class LlmGoogleService:
         # 検索する場合はfunctionを実行し情報を取得
         search_functions = {
             "get_shop_details": "店舗情報",
+            "get_shop_access": "アクセス",
             "search_menus": "メニュー",
         }
 

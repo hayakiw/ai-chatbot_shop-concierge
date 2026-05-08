@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: "chatbot-db"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dev
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    volumes:
+      - ./backend/mysql/data:/var/lib/mysql
+      - ./backend/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./backend/mysql/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    command: --port 3306
+    tty: true
+
+  api:
+    depends_on:
+      - db
+    container_name: "chatbot-api"
+    build: ./backend/app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app/api:/usr/src/server
+
+  frontend:
+    container_name: "chatbot-frontend"
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    environment:
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    tty: true

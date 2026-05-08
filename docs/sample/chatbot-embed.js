@@ -31,28 +31,72 @@ class ChatbotEmbed {
         style.textContent = `
             .chatbot-icon {
                 position: fixed;
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                background: ${this.options.iconColor};
+                height: 60px;
+                padding: 0 26px;
+                border-radius: 30px;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+                background-size: 200% 200%;
+                animation: chatbot-gradient-shift 6s ease infinite;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                gap: 10px;
                 cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                transition: all 0.3s ease;
+                box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45), 0 0 0 0 rgba(139, 92, 246, 0.5);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
                 z-index: ${this.options.zIndex};
             }
 
+            .chatbot-icon::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+                filter: blur(14px);
+                opacity: 0.55;
+                z-index: -1;
+                animation: chatbot-pulse 2.4s ease-in-out infinite;
+            }
+
             .chatbot-icon:hover {
-                transform: scale(1.1);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+                transform: translateY(-2px) scale(1.03);
+                box-shadow: 0 12px 28px rgba(139, 92, 246, 0.55);
             }
 
             .chatbot-icon svg {
-                width: 30px;
-                height: 30px;
+                width: 22px;
+                height: 22px;
                 fill: white;
+                flex-shrink: 0;
+                filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+                animation: chatbot-sparkle 2.4s ease-in-out infinite;
+            }
+
+            .chatbot-icon-label {
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                white-space: nowrap;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+            }
+
+            @keyframes chatbot-gradient-shift {
+                0%   { background-position: 0% 50%; }
+                50%  { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            @keyframes chatbot-pulse {
+                0%, 100% { opacity: 0.45; transform: scale(1); }
+                50%      { opacity: 0.75; transform: scale(1.06); }
+            }
+
+            @keyframes chatbot-sparkle {
+                0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+                50%      { transform: scale(1.15) rotate(12deg); opacity: 0.85; }
             }
 
             .chatbot-icon.bottom-right {
@@ -132,7 +176,9 @@ class ChatbotEmbed {
             }
 
             .chatbot-header {
-                background: ${this.options.iconColor};
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+                background-size: 200% 200%;
+                animation: chatbot-gradient-shift 6s ease infinite;
                 color: white;
                 padding: 4px;
                 display: flex;
@@ -199,35 +245,14 @@ class ChatbotEmbed {
         this.iconElement = document.createElement('div');
         this.iconElement.className = `chatbot-icon ${this.options.position}`;
         this.iconElement.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;">
-                    <!-- 頭 -->
-                    <rect x="6" y="4" width="12" height="10" rx="2" fill="none" stroke="white" stroke-width="2"/>
-                    
-                    <!-- アンテナ -->
-                    <line x1="12" y1="2" x2="12" y2="4" stroke="white" stroke-width="2"/>
-                    <circle cx="12" cy="1.5" r="1" fill="white"/>
-                    
-                    <!-- 目 -->
-                    <circle cx="10" cy="9" r="1.5" fill="white"/>
-                    <circle cx="14" cy="9" r="1.5" fill="white"/>
-                    
-                    <!-- 口 -->
-                    <rect x="9" y="11" width="6" height="1.5" rx="0.75" fill="white"/>
-                    
-                    <!-- 胴体 -->
-                    <rect x="8" y="14" width="8" height="5" rx="1" fill="none" stroke="white" stroke-width="2"/>
-                    
-                    <!-- 腕 -->
-                    <line x1="6" y1="16" x2="8" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="16" y1="16" x2="18" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                    
-                    <!-- 脚 -->
-                    <line x1="10" y1="19" x2="10" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                    <line x1="14" y1="19" x2="14" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span style="color: white; font-size: 12px; font-weight: 600; white-space: nowrap;">AIに質問</span>
-            </div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <!-- メインのスパークル（AI風キラキラ） -->
+                <path d="M12 2 L13.4 9.2 L20.5 10.6 L13.4 12 L12 19.2 L10.6 12 L3.5 10.6 L10.6 9.2 Z" fill="white"/>
+                <!-- サブスパークル -->
+                <path d="M19.5 3 L20 5.2 L22.2 5.7 L20 6.2 L19.5 8.4 L19 6.2 L16.8 5.7 L19 5.2 Z" fill="white" opacity="0.85"/>
+                <path d="M5 17 L5.4 18.6 L7 19 L5.4 19.4 L5 21 L4.6 19.4 L3 19 L4.6 18.6 Z" fill="white" opacity="0.75"/>
+            </svg>
+            <span class="chatbot-icon-label">AIに質問</span>
         `;
         this.iconElement.addEventListener('click', () => this.toggleChat());
         document.body.appendChild(this.iconElement);
